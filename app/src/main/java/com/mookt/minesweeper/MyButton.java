@@ -1,19 +1,17 @@
 package com.mookt.minesweeper;
 
+import android.content.Context;
+import android.support.v7.widget.AppCompatButton;
+import android.util.AttributeSet;
 import android.widget.Button;
 
-public class MyButton {
-    private Button button;
+public class MyButton extends Button {
     private int posX, posY;
 
-    public MyButton(Button b, int x, int y){
-        button = b;
+    public MyButton(Context context, int x, int y){
+        super(context);
         posX = x;
         posY = y;
-    }
-
-    public Button getButton() {
-        return button;
     }
 
     public int getPosX(){
