@@ -22,14 +22,31 @@ public class Board {
             for(int j = 0; j < width; j++){
                 numBomb = 0;
                 if(board[i][j] != -1){
-                    numBomb += checkTopLeft(i,j);
-                    numBomb += checkTop(i,j);
-                    numBomb += checkTopRight(i,j);
-                    numBomb += checkLeft(i,j);
-                    numBomb += checkRight(i,j);
-                    numBomb += checkBottomLeft(i,j);
-                    numBomb += checkBottom(i,j);
-                    numBomb += checkBottomRight(i,j);
+                    if(checkTopLeft(i,j, -1) == 1){
+                        numBomb++;
+                    }
+                    if(checkTop(i,j,-1)  == 1){
+                        numBomb++;
+                    }
+                    if(checkTopRight(i,j,-1)  == 1){
+                        numBomb++;
+                    }
+                    if(checkLeft(i,j,-1)  == 1){
+                        numBomb++;
+                    }
+                    if(checkRight(i,j,-1)  == 1){
+                        numBomb++;
+                    }
+                    if(checkBottomLeft(i,j,-1)  == 1){
+                        numBomb++;
+                    }
+                    if(checkBottom(i,j,-1)  == 1){
+                        numBomb++;
+                    }
+                    if(checkBottomRight(i,j,-1)  == 1){
+                        numBomb++;
+                    }
+
                     board[i][j] = numBomb;
                 }
             }
@@ -37,10 +54,11 @@ public class Board {
     }
 
     /*
+        x = height, y = width
      ____ ____ ____      ________ ________ ________
-    |_tl_|_t__|_tr_|    |x-1, y-1| x, y-1 |x+1,y-1|
-    |_l__|_x__|_r__|    | x-1, y |  x, y  | x+1,y |
-    |_bl_|_b__|_br_|    |x-1, y+1| x, y+1 |x+1,y+1|
+    |_tl_|_t__|_tr_|    |x-1, y-1| x-1, y |x-1,y+1|
+    |_l__|_x__|_r__|    | x, y-1 |  x, y  | x,y+1 |
+    |_bl_|_b__|_br_|    |x+1, y-1| x+1, y |x+1,y+1|
 
     x = self
     tl = top left
@@ -52,81 +70,81 @@ public class Board {
     br = bottom right
     */
 
-    private int checkTopLeft(int x, int y){
+    public int checkTopLeft(int x, int y, int check){
         if(x - 1 < 0 || y - 1 < 0){
-            return 0;
+            return -1;
         }
-        if(board[x-1][y-1] == -1){
+        if(board[x-1][y-1] == check){
             return 1;
         }
         return 0;
     }
 
-    private int checkTop(int x, int y){
-        if(y - 1 < 0){
-            return 0;
-        }
-        if(board[x][y-1] == -1){
-            return 1;
-        }
-        return 0;
-    }
-
-    private int checkTopRight(int x, int y){
-        if(x + 1 >= height || y - 1 < 0){
-            return 0;
-        }
-        if(board[x+1][y-1] == -1){
-            return 1;
-        }
-        return 0;
-    }
-
-    private int checkLeft(int x, int y){
+    public int checkTop(int x, int y, int check){
         if(x - 1 < 0){
-            return 0;
+            return -1;
         }
-        if(board[x-1][y] == -1){
+        if(board[x-1][y] == check){
             return 1;
         }
         return 0;
     }
 
-    private int checkRight(int x, int y){
-        if(x + 1 >= height){
-            return 0;
-        }
-        if(board[x+1][y] == -1){
-            return 1;
-        }
-        return 0;
-    }
-
-    private int checkBottomLeft(int x, int y){
+    public int checkTopRight(int x, int y, int check){
         if(x - 1 < 0 || y + 1 >= width){
-            return 0;
+            return -1;
         }
-        if(board[x-1][y+1] == -1){
+        if(board[x-1][y+1] == check){
             return 1;
         }
         return 0;
     }
 
-    private int checkBottom(int x, int y){
+    public int checkLeft(int x, int y, int check){
+        if(y - 1 < 0){
+            return -1;
+        }
+        if(board[x][y-1] == check){
+            return 1;
+        }
+        return 0;
+    }
+
+    public int checkRight(int x, int y, int check){
         if(y + 1 >= width){
-            return 0;
+            return -1;
         }
-        if(board[x][y+1] == -1){
+        if(board[x][y+1] == check){
             return 1;
         }
         return 0;
     }
 
-    private int checkBottomRight(int x, int y){
-        if(x + 1 >= height || y + 1 >= width){
-            return 0;
+    public int checkBottomLeft(int x, int y, int check){
+        if(x + 1 >= height || y - 1 < 0){
+            return -1;
         }
-        if(board[x+1][y+1] == -1){
+        if(board[x+1][y-1] == check){
+            return 1;
+        }
+        return 0;
+    }
+
+    public int checkBottom(int x, int y, int check){
+        if(x + 1 >= height){
+            return -1;
+        }
+        if(board[x+1][y] == check){
+            return 1;
+        }
+        return 0;
+    }
+
+    public int checkBottomRight(int x, int y, int check){
+        if(x + 1 >= height || y + 1 >= width){
+            return -1;
+        }
+        if(board[x+1][y+1] == check){
             return 1;
         }
         return 0;
