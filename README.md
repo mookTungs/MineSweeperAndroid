@@ -1,0 +1,2 @@
+# MineSweeperAndroid
+status: in development
