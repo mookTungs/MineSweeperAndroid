@@ -16,6 +16,12 @@ public class Board {
     }
 
     public void generateBoard(){
+        for(int i = 0; i < height; i++){
+            for(int j = 0; j < width; j++){
+                board[i][j] = 0;
+            }
+        }
+
         randomBomb();
         int numBomb;
         for(int i = 0; i < height; i++){

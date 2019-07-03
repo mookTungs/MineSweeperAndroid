@@ -3,6 +3,9 @@ package com.mookt.minesweeper;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -13,8 +16,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private int width = 10;
-    private int height = 10;
-    private int bombs = 10;
+    private int height = 8;
+    private int bombs = 13;
     MyButton[][] buttonBoard;
     TableLayout tableLayout;
     Board gameBoard;
@@ -26,16 +29,42 @@ public class MainActivity extends AppCompatActivity {
 
         tableLayout = findViewById(R.id.tableLayout);
         buttonBoard = new MyButton[height][width];
-
         createDisplay();
         gameBoard = new Board(width, height, bombs);
+        gameBoard.generateBoard();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.restart_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        if(item.getItemId() == R.id.restart){
+            newGame();
+            return true;
+        }else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void newGame(){
+        for(int i = 0; i < height; i++){
+            for(int j = 0; j < width; j++){
+                buttonBoard[i][j].setText("");
+                buttonBoard[i][j].setBackgroundResource(R.drawable.table_border);
+                buttonBoard[i][j].setClickable(true);
+            }
+        }
         gameBoard.generateBoard();
     }
 
     public void createDisplay(){
         TableRow tableRow;
         MyButton button;
-
 
         for(int i = 0; i < height; i++){
             tableRow = new TableRow(this);
@@ -50,10 +79,15 @@ public class MainActivity extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MyButton b = (MyButton) v;
+                        final MyButton b = (MyButton) v;
                         int x = gameBoard.board[b.getPosX()][b.getPosY()];
                         if(x == 0){
-                            expand(b);
+                            new Thread(){
+                                public void run(){
+                                    expand(b);
+                                }
+                            }.start();
+
                         }else {
                             b.setText(Integer.toString(gameBoard.board[b.getPosX()][b.getPosY()]));
                         }
@@ -80,59 +114,102 @@ public class MainActivity extends AppCompatActivity {
             int bottom = gameBoard.checkBottom(p.first, p.second, 0);
             int left = gameBoard.checkLeft(p.first, p.second, 0);
             int right = gameBoard.checkRight(p.first, p.second, 0);
+            int topLeft = gameBoard.checkTopLeft(p.first, p.second, 0);
+            int topRight = gameBoard.checkTopRight(p.first, p.second, 0);
+            int bottomRight = gameBoard.checkBottomRight(p.first, p.second, 0);
+            int bottomLeft = gameBoard.checkBottomLeft(p.first, p.second, 0);
+
             if (top != -1) {
-                MyButton t = buttonBoard[p.first - 1][p.second];
-                t.setBackgroundResource(R.drawable.table_border_clicked);
-                t.setClickable(false);
+                updateButton(p.first-1, p.second, top);
                 if(top == 1) {
                     Pair<Integer, Integer> n = new Pair<Integer, Integer>(p.first - 1, p.second);
                     if (!list2.contains(n)) {
                         list.add(n);
                     }
-                }else if(top == 0){
-                    t.setText(Integer.toString(gameBoard.board[t.getPosX()][t.getPosY()]));
                 }
             }
             if (bottom != -1) {
-                MyButton t = buttonBoard[p.first + 1][p.second];
-                t.setBackgroundResource(R.drawable.table_border_clicked);
-                t.setClickable(false);
-                Pair<Integer, Integer> n = new Pair<Integer, Integer>(p.first + 1, p.second);
+                updateButton(p.first+1, p.second, bottom);
                 if(bottom == 1) {
+                    Pair<Integer, Integer> n = new Pair<Integer, Integer>(p.first + 1, p.second);
                     if (!list2.contains(n)) {
                         list.add(n);
                     }
-                }else if(bottom == 0){
-                    t.setText(Integer.toString(gameBoard.board[t.getPosX()][t.getPosY()]));
                 }
             }
             if (left != -1) {
-                MyButton t = buttonBoard[p.first][p.second - 1];
-                t.setBackgroundResource(R.drawable.table_border_clicked);
-                t.setClickable(false);
-                Pair<Integer, Integer> n = new Pair<Integer, Integer>(p.first, p.second - 1);
+                updateButton(p.first, p.second-1, left);
                 if(left == 1) {
+                    Pair<Integer, Integer> n = new Pair<Integer, Integer>(p.first, p.second - 1);
                     if (!list2.contains(n)) {
                         list.add(n);
                     }
-                }else if(left == 0){
-                    t.setText(Integer.toString(gameBoard.board[t.getPosX()][t.getPosY()]));
                 }
             }
             if (right != -1) {
-                MyButton t = buttonBoard[p.first][p.second + 1];
-                t.setBackgroundResource(R.drawable.table_border_clicked);
-                t.setClickable(false);
-                Pair<Integer, Integer> n = new Pair<Integer, Integer>(p.first, p.second + 1);
+                updateButton(p.first, p.second+1, right);
                 if(right == 1) {
+                    Pair<Integer, Integer> n = new Pair<Integer, Integer>(p.first, p.second + 1);
                     if (!list2.contains(n)) {
                         list.add(n);
                     }
-                }else if(right == 0){
-                    t.setText(Integer.toString(gameBoard.board[t.getPosX()][t.getPosY()]));
                 }
             }
+
+            if (topLeft != -1) {
+                updateButton(p.first-1, p.second-1, topLeft);
+                if(topLeft == 1) {
+                    Pair<Integer, Integer> n = new Pair<Integer, Integer>(p.first-1, p.second-1);
+                    if (!list2.contains(n)) {
+                        list.add(n);
+                    }
+                }
+            }
+
+            if (topRight != -1) {
+                updateButton(p.first-1, p.second+1, topRight);
+                if(topRight == 1) {
+                    Pair<Integer, Integer> n = new Pair<Integer, Integer>(p.first-1, p.second + 1);
+                    if (!list2.contains(n)) {
+                        list.add(n);
+                    }
+                }
+            }
+            if (bottomRight != -1) {
+                updateButton(p.first+1, p.second+1, bottomRight);
+                if(bottomRight == 1) {
+                    Pair<Integer, Integer> n = new Pair<Integer, Integer>(p.first+1, p.second + 1);
+                    if (!list2.contains(n)) {
+                        list.add(n);
+                    }
+                }
+            }
+            if (bottomLeft != -1) {
+                updateButton(p.first+1, p.second-1, bottomLeft);
+                if(bottomLeft == 1) {
+                    Pair<Integer, Integer> n = new Pair<Integer, Integer>(p.first+1, p.second-1);
+                    if (!list2.contains(n)) {
+                        list.add(n);
+                    }
+                }
+            }
+
         }
+    }
+
+    public void updateButton(final int x, final int y, final int checkIfZero){
+        final MyButton t = buttonBoard[x][y];
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                t.setBackgroundResource(R.drawable.table_border_clicked);
+                t.setClickable(false);
+                if (checkIfZero == 0) {
+                    t.setText(Integer.toString(gameBoard.board[x][y]));
+                }
+            }
+        });
+
     }
 
 
