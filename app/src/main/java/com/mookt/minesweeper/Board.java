@@ -15,14 +15,14 @@ public class Board {
         board = new int[height][width];
     }
 
-    public void generateBoard(){
+    public void generateBoard(int x, int y){
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
                 board[i][j] = 0;
             }
         }
 
-        randomBomb();
+        randomBomb(x, y);
         int numBomb;
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
@@ -156,14 +156,17 @@ public class Board {
         return 0;
     }
 
-    private void randomBomb(){
+    private void randomBomb(int x, int y){
         int numBombLeft = bombs;
-        int x, y;
+        int i, j;
         while(numBombLeft > 0){
-            x = getXCoor();
-            y = getYCoor();
-            if(board[x][y] != -1) {
-                board[x][y] = -1;
+            i = getXCoor();
+            j = getYCoor();
+            if(i==x && j==x){
+                continue;
+            }
+            if(board[i][j] != -1) {
+                board[i][j] = -1;
                 numBombLeft--;
             }
         }

@@ -15,9 +15,10 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-    private int width = 10;
-    private int height = 8;
-    private int bombs = 13;
+    private int width = 20;
+    private int height = 10;
+    private int bombs = 20;
+    private boolean firstClick;
     MyButton[][] buttonBoard;
     TableLayout tableLayout;
     Board gameBoard;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         buttonBoard = new MyButton[height][width];
         createDisplay();
         gameBoard = new Board(width, height, bombs);
-        gameBoard.generateBoard();
+        firstClick = true;
     }
 
     @Override
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 buttonBoard[i][j].setClickable(true);
             }
         }
-        gameBoard.generateBoard();
+        firstClick = true;
     }
 
     public void createDisplay(){
@@ -80,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         final MyButton b = (MyButton) v;
+                        if(firstClick == true){
+                            gameBoard.generateBoard(b.getPosX(), b.getPosY());
+                            firstClick = false;
+                        }
                         int x = gameBoard.board[b.getPosX()][b.getPosY()];
                         if(x == 0){
                             new Thread(){
