@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 buttonBoard[i][j].setText("");
                 buttonBoard[i][j].setBackgroundResource(R.drawable.table_border);
                 buttonBoard[i][j].setClickable(true);
+                buttonBoard[i][j].visited = false;
             }
         }
         firstClick = true;
@@ -90,11 +91,8 @@ public class MainActivity extends AppCompatActivity {
                             expand(b.getPosX(), b.getPosY());
                         }else {
                             updateButton(b.getPosX(),b.getPosY(),x);
-                            if(x == -1){
-                                gameOver();
-                            }
                         }
-                        win();
+                        checkGameState(x);
                     }
                 });
                 buttonBoard[i][j] = button;
@@ -104,23 +102,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void win(){
-        System.out.println(gameBoard.uncovered);
-        if(gameBoard.uncovered == (gameBoard.totalGrid-bombs)){
-            for(int i = 0; i < height; i++){
-                for(int j = 0; j < width; j++){
-                    buttonBoard[i][j].setClickable(false);
-                    if(gameBoard.board[i][j] == -1){
-                        buttonBoard[i][j].setText("-1");
-                        buttonBoard[i][j].setBackgroundResource(R.drawable.table_border_clicked);
-                    }
-                }
-            }
+    public void checkGameState(int num){
+        if(num == -1){
+            uncoverBomb();
+            Toast.makeText(this, "Game Over", Toast.LENGTH_LONG).show();
+        }else if(gameBoard.uncovered == (gameBoard.totalGrid-bombs)){
+            uncoverBomb();
             Toast.makeText(this, "YOU WIN! :D", Toast.LENGTH_LONG).show();
         }
     }
 
-    public void gameOver(){
+    public void uncoverBomb(){
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
                 buttonBoard[i][j].setClickable(false);
@@ -130,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        Toast.makeText(this, "Game Over", Toast.LENGTH_LONG).show();
     }
 
     public void expand(int x, int y) {
@@ -140,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
             }
             int result = gameBoard.board[x][y];
             updateButton(x,y,result);
-            System.out.println("hello");
             if (result > 0) {
                 return;
             }
