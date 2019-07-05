@@ -4,6 +4,6 @@
     <item android:id="@+id/restart"
         android:icon="@drawable/ic_replay"
         android:title="Replay"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
 </menu>
