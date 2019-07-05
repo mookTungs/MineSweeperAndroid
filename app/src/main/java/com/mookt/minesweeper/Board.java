@@ -6,16 +6,21 @@ public class Board {
     private int width;
     private int height;
     private int bombs;
+    public int uncovered;
+    public int totalGrid;
     public int[][] board;
 
     public Board(int width, int height, int bombs){
         this.width = width;
         this.height = height;
         this.bombs = bombs;
+        uncovered = 0;
+        totalGrid = width*height;
         board = new int[height][width];
     }
 
     public void generateBoard(int x, int y){
+        uncovered = 0;
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
                 board[i][j] = 0;
@@ -28,28 +33,28 @@ public class Board {
             for(int j = 0; j < width; j++){
                 numBomb = 0;
                 if(board[i][j] != -1){
-                    if(checkTopLeft(i,j, -1) == 1){
+                    if(checkTopLeft(i,j,-1) == true){
                         numBomb++;
                     }
-                    if(checkTop(i,j,-1)  == 1){
+                    if(checkTop(i,j,-1)  == true){
                         numBomb++;
                     }
-                    if(checkTopRight(i,j,-1)  == 1){
+                    if(checkTopRight(i,j,-1)  == true){
                         numBomb++;
                     }
-                    if(checkLeft(i,j,-1)  == 1){
+                    if(checkLeft(i,j,-1)  == true){
                         numBomb++;
                     }
-                    if(checkRight(i,j,-1)  == 1){
+                    if(checkRight(i,j,-1)  == true){
                         numBomb++;
                     }
-                    if(checkBottomLeft(i,j,-1)  == 1){
+                    if(checkBottomLeft(i,j,-1)  == true){
                         numBomb++;
                     }
-                    if(checkBottom(i,j,-1)  == 1){
+                    if(checkBottom(i,j,-1)  == true){
                         numBomb++;
                     }
-                    if(checkBottomRight(i,j,-1)  == 1){
+                    if(checkBottomRight(i,j,-1)  == true){
                         numBomb++;
                     }
 
@@ -76,84 +81,84 @@ public class Board {
     br = bottom right
     */
 
-    public int checkTopLeft(int x, int y, int check){
+    public boolean checkTopLeft(int x, int y, int check){
         if(x - 1 < 0 || y - 1 < 0){
-            return -1;
+            return false;
         }
         if(board[x-1][y-1] == check){
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
-    public int checkTop(int x, int y, int check){
+    public boolean checkTop(int x, int y, int check){
         if(x - 1 < 0){
-            return -1;
+            return false;
         }
         if(board[x-1][y] == check){
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
-    public int checkTopRight(int x, int y, int check){
+    public boolean checkTopRight(int x, int y, int check){
         if(x - 1 < 0 || y + 1 >= width){
-            return -1;
+            return false;
         }
         if(board[x-1][y+1] == check){
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
-    public int checkLeft(int x, int y, int check){
+    public boolean checkLeft(int x, int y, int check){
         if(y - 1 < 0){
-            return -1;
+            return false;
         }
         if(board[x][y-1] == check){
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
-    public int checkRight(int x, int y, int check){
+    public boolean checkRight(int x, int y, int check){
         if(y + 1 >= width){
-            return -1;
+            return false;
         }
         if(board[x][y+1] == check){
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
-    public int checkBottomLeft(int x, int y, int check){
+    public boolean checkBottomLeft(int x, int y, int check){
         if(x + 1 >= height || y - 1 < 0){
-            return -1;
+            return false;
         }
         if(board[x+1][y-1] == check){
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
-    public int checkBottom(int x, int y, int check){
+    public boolean checkBottom(int x, int y, int check){
         if(x + 1 >= height){
-            return -1;
+            return false;
         }
         if(board[x+1][y] == check){
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
-    public int checkBottomRight(int x, int y, int check){
+    public boolean checkBottomRight(int x, int y, int check){
         if(x + 1 >= height || y + 1 >= width){
-            return -1;
+            return false;
         }
         if(board[x+1][y+1] == check){
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
     private void randomBomb(int x, int y){
@@ -162,7 +167,7 @@ public class Board {
         while(numBombLeft > 0){
             i = getXCoor();
             j = getYCoor();
-            if(i==x && j==x){
+            if(i==x && j==y){
                 continue;
             }
             if(board[i][j] != -1) {
