@@ -1,6 +1,5 @@
 package com.mookt.minesweeper;
 
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,9 +13,10 @@ import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
-    private int width = 20;
-    private int height = 10;
-    private int bombs = 25;
+
+    private int width = 16;
+    private int height = 16;
+    private int bombs = 40;
     private boolean firstClick;
     MyButton[][] buttonBoard;
     TableLayout tableLayout;
@@ -43,11 +43,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        if(item.getItemId() == R.id.restart){
-            newGame();
-            return true;
-        }else {
-            return super.onOptionsItemSelected(item);
+        switch(item.getItemId()) {
+            case R.id.restart:
+                newGame();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -72,9 +73,11 @@ public class MainActivity extends AppCompatActivity {
             tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
             for(int j = 0; j < width; j++){
                 button = new MyButton(this,i,j);
-                TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT );
+                TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
+                layoutParams.width = 50;
+                layoutParams.height = 50;
                 layoutParams.weight = 1;
-                button.setBackgroundResource(R.drawable.table_border);
+                button.setBackgroundResource(R.drawable.ic_button);
                 button.setLayoutParams(layoutParams);
                 button.setText("");
                 button.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                         if(x == 0){
                             expand(b.getPosX(), b.getPosY());
                         }else {
-                            updateButton(b.getPosX(),b.getPosY(),x);
+                            updateButton(b.getPosX(),b.getPosY(), x);
                         }
                         checkGameState(x);
                     }
@@ -117,8 +120,7 @@ public class MainActivity extends AppCompatActivity {
             for(int j = 0; j < width; j++){
                 buttonBoard[i][j].setClickable(false);
                 if(gameBoard.board[i][j] == -1){
-                    buttonBoard[i][j].setText("-1");
-                    buttonBoard[i][j].setBackgroundResource(R.drawable.table_border_clicked);
+                    buttonBoard[i][j].setBackgroundResource(R.drawable.ic_bomb);
                 }
             }
         }
@@ -148,13 +150,36 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateButton(int x, int y, int num){
         MyButton t = buttonBoard[x][y];
-        buttonBoard[x][y].visited = true;
+        t.visited = true;
         t.setBackgroundResource(R.drawable.table_border_clicked);
         t.setClickable(false);
-        if (num > 0) {
-            t.setText(Integer.toString(num));
-        }
         gameBoard.uncovered++;
+        switch (num){
+            case 1:
+                t.setBackgroundResource(R.drawable.ic_one);
+                break;
+            case 2:
+                t.setBackgroundResource(R.drawable.ic_two);
+                break;
+            case 3:
+                t.setBackgroundResource(R.drawable.ic_three);
+                break;
+            case 4:
+                t.setBackgroundResource(R.drawable.ic_four);
+                break;
+            case 5:
+                t.setBackgroundResource(R.drawable.ic_five);
+                break;
+            case 6:
+                t.setBackgroundResource(R.drawable.ic_six);
+                break;
+            case 7:
+                t.setBackgroundResource(R.drawable.ic_seven);
+                break;
+            case 8:
+                t.setBackgroundResource(R.drawable.ic_eight);
+                break;
+        }
     }
 
 
