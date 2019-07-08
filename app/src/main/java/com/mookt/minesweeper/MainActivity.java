@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
         tableLayout = findViewById(R.id.tableLayout);
         buttonBoard = new MyButton[height][width];
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         createDisplay();
         gameBoard = new Board(width, height, bombs);
         firstClick = true;
