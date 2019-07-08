@@ -1,5 +1,6 @@
 package com.mookt.minesweeper;
 
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,9 +15,9 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private int width = 16;
+    private int width = 30;
     private int height = 16;
-    private int bombs = 40;
+    private int bombs = 99;
     private boolean firstClick;
     MyButton[][] buttonBoard;
     TableLayout tableLayout;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         tableLayout = findViewById(R.id.tableLayout);
         buttonBoard = new MyButton[height][width];
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         createDisplay();
         gameBoard = new Board(width, height, bombs);
         firstClick = true;
@@ -46,6 +48,39 @@ public class MainActivity extends AppCompatActivity {
         switch(item.getItemId()) {
             case R.id.restart:
                 newGame();
+                return true;
+            case R.id.easy:
+                width = 9;
+                height = 9;
+                bombs = 10;
+                tableLayout.removeAllViewsInLayout();
+                buttonBoard = new MyButton[height][width];
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                createDisplay();
+                gameBoard = new Board(width,height,bombs);
+                firstClick = true;
+                return true;
+            case R.id.intermediate:
+                width = 16;
+                height = 16;
+                bombs = 40;
+                tableLayout.removeAllViewsInLayout();
+                buttonBoard = new MyButton[height][width];
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                createDisplay();
+                gameBoard = new Board(width,height,bombs);
+                firstClick = true;
+                return true;
+            case R.id.advanced:
+                width = 30;
+                height = 16;
+                bombs = 99;
+                tableLayout.removeAllViewsInLayout();
+                buttonBoard = new MyButton[height][width];
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                createDisplay();
+                gameBoard = new Board(width,height,bombs);
+                firstClick = true;
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -87,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         final MyButton b = (MyButton) v;
-                        if(firstClick == true){
+                        if(firstClick){
                             gameBoard.generateBoard(b.getPosX(), b.getPosY());
                             firstClick = false;
                         }

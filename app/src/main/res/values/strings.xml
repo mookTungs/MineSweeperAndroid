@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MineSweeper</string>
+    <string name="easy">Easy</string>
+    <string name="intermediate">Intermediate</string>
+    <string name="advanced">Advanced</string>
+    <string name="replay">Replay</string>
 </resources>
