@@ -1,9 +1,9 @@
 package com.mookt.minesweeper;
 
 import android.content.Context;
-import android.widget.Button;
+import android.widget.ImageButton;
 
-public class MyButton extends Button {
+public class MyButton extends ImageButton {
     private int posX, posY;
     public boolean visited;
 

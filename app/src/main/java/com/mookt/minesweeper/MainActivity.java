@@ -55,8 +55,7 @@ public class MainActivity extends AppCompatActivity {
     public void newGame(){
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
-                buttonBoard[i][j].setText("");
-                buttonBoard[i][j].setBackgroundResource(R.drawable.table_border);
+                buttonBoard[i][j].setBackgroundResource(R.drawable.ic_button);
                 buttonBoard[i][j].setClickable(true);
                 buttonBoard[i][j].visited = false;
             }
@@ -70,16 +69,20 @@ public class MainActivity extends AppCompatActivity {
 
         for(int i = 0; i < height; i++){
             tableRow = new TableRow(this);
-            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
+            TableRow.LayoutParams tableRowLayParam =  new TableRow.LayoutParams();
+            tableRowLayParam.width =  TableRow.LayoutParams.MATCH_PARENT;
+            tableRowLayParam.height = TableRow.LayoutParams.MATCH_PARENT;
+            tableRowLayParam.weight = 1;
+            tableRow.setLayoutParams(tableRowLayParam);
             for(int j = 0; j < width; j++){
                 button = new MyButton(this,i,j);
+
                 TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
                 layoutParams.width = 50;
                 layoutParams.height = 50;
                 layoutParams.weight = 1;
                 button.setBackgroundResource(R.drawable.ic_button);
                 button.setLayoutParams(layoutParams);
-                button.setText("");
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
