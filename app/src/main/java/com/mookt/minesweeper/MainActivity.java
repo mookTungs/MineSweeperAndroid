@@ -1,7 +1,9 @@
 package com.mookt.minesweeper;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.menu.MenuBuilder;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,9 +16,9 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private int width = 30;
-    private int height = 16;
-    private int bombs = 99;
+    private int width = 9;
+    private int height = 9;
+    private int bombs = 10;
     private boolean firstClick;
     MyButton[][] buttonBoard;
     TableLayout tableLayout;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         firstClick = true;
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
