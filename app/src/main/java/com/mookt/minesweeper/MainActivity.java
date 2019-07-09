@@ -1,6 +1,5 @@
 package com.mookt.minesweeper;
 
-import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -54,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
                 bombs = 10;
                 tableLayout.removeAllViewsInLayout();
                 buttonBoard = new MyButton[height][width];
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 createDisplay();
                 gameBoard = new Board(width,height,bombs);
                 firstClick = true;
@@ -65,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
                 bombs = 40;
                 tableLayout.removeAllViewsInLayout();
                 buttonBoard = new MyButton[height][width];
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 createDisplay();
                 gameBoard = new Board(width,height,bombs);
                 firstClick = true;
@@ -76,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
                 bombs = 99;
                 tableLayout.removeAllViewsInLayout();
                 buttonBoard = new MyButton[height][width];
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 createDisplay();
                 gameBoard = new Board(width,height,bombs);
                 firstClick = true;
@@ -112,8 +108,8 @@ public class MainActivity extends AppCompatActivity {
                 button = new MyButton(this,i,j);
 
                 TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
-                layoutParams.width = 50;
-                layoutParams.height = 50;
+                layoutParams.width = 60;
+                layoutParams.height = 60;
                 layoutParams.weight = 1;
                 button.setBackgroundResource(R.drawable.ic_button);
                 button.setLayoutParams(layoutParams);
