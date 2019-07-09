@@ -6,6 +6,16 @@
         android:title="@string/replay"
         app:showAsAction="ifRoom"/>
 
+    <item android:id="@+id/zoomIn"
+        android:icon="@drawable/ic_zoom_in"
+        android:title="@string/zoom_in"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/zoomOut"
+        android:icon="@drawable/ic_zoom_out"
+        android:title="@string/zoom_out"
+        app:showAsAction="ifRoom"/>
+
     <item android:id="@+id/easy"
         android:title="@string/easy"
         app:showAsAction="never"/>

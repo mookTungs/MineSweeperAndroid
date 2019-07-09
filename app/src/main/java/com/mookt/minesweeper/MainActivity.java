@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
@@ -50,6 +51,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.restart:
                 newGame();
                 return true;
+            case R.id.zoomIn:
+                zoom(10);
+                return true;
+            case R.id.zoomOut:
+                zoom(-10);
+                return true;
             case R.id.easy:
                 width = 9;
                 height = 9;
@@ -82,6 +89,21 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void zoom(int x){
+        ViewGroup.LayoutParams params;
+        for(int i = 0; i < height; i++){
+            for(int j = 0; j < width; j++){
+                params = buttonBoard[i][j].getLayoutParams();
+                if(params.height == 30 && x < 0){
+                    return;
+                }
+                params.height += x;
+                params.width +=x;
+                buttonBoard[i][j].setLayoutParams(params);
+            }
         }
     }
 
