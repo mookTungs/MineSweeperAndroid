@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
         firstClick = true;
     }
 
-    @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
@@ -111,8 +110,10 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
                 buttonBoard[i][j].setBackgroundResource(R.drawable.ic_button);
-                buttonBoard[i][j].setClickable(true);
+                buttonBoard[i][j].setEnabled(true);
                 buttonBoard[i][j].visited = false;
+                buttonBoard[i][j].opened = false;
+                buttonBoard[i][j].flag = false;
             }
         }
         firstClick = true;
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        final MyButton b = (MyButton) v;
+                        MyButton b = (MyButton) v;
                         if(firstClick){
                             gameBoard.generateBoard(b.getPosX(), b.getPosY());
                             firstClick = false;
@@ -154,6 +155,20 @@ public class MainActivity extends AppCompatActivity {
                             updateButton(b.getPosX(),b.getPosY(), x);
                         }
                         checkGameState(x);
+                    }
+                });
+                button.setOnLongClickListener(new View.OnLongClickListener(){
+                    @Override
+                    public boolean onLongClick(View v){
+                        MyButton b = (MyButton) v;
+                        if(b.flag && !b.opened){
+                            b.setBackgroundResource(R.drawable.ic_button);
+                            b.flag = false;
+                        }else if(!b.opened){
+                            b.setBackgroundResource(R.drawable.ic_flag);
+                            b.flag = true;
+                        }
+                        return true;
                     }
                 });
                 buttonBoard[i][j] = button;
@@ -176,9 +191,13 @@ public class MainActivity extends AppCompatActivity {
     public void uncoverBomb(){
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
-                buttonBoard[i][j].setClickable(false);
-                if(gameBoard.board[i][j] == -1){
+                buttonBoard[i][j].setEnabled(false);
+                if(gameBoard.board[i][j] == -1 && buttonBoard[i][j].flag){
+                    buttonBoard[i][j].setBackgroundResource(R.drawable.ic_flagbomb);
+                }else if(gameBoard.board[i][j] == -1){
                     buttonBoard[i][j].setBackgroundResource(R.drawable.ic_bomb);
+                }else if(gameBoard.board[i][j] != -1 && buttonBoard[i][j].flag){
+                    buttonBoard[i][j].setBackgroundResource(R.drawable.ic_wrongbomb);
                 }
             }
         }
@@ -210,7 +229,8 @@ public class MainActivity extends AppCompatActivity {
         MyButton t = buttonBoard[x][y];
         t.visited = true;
         t.setBackgroundResource(R.drawable.table_border_clicked);
-        t.setClickable(false);
+        t.setEnabled(false);
+        t.opened = true;
         gameBoard.uncovered++;
         switch (num){
             case 1:
