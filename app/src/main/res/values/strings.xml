@@ -6,4 +6,6 @@
     <string name="replay">Replay</string>
     <string name="zoom_in">Zoom In</string>
     <string name="zoom_out">Zoom Out</string>
+    <string name="timer">Time: </string>
+    <string name="mine">Mine: </string>
 </resources>

@@ -1,16 +1,19 @@
 package com.mookt.minesweeper;
 
-import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.menu.MenuBuilder;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -20,20 +23,27 @@ public class MainActivity extends AppCompatActivity {
     private int width = 9;
     private int height = 9;
     private int bombs = 10;
+    private int minesCounter;
     private boolean firstClick;
     MyButton[][] buttonBoard;
     TableLayout tableLayout;
     Board gameBoard;
+    TextView mineDisplay;
+    Chronometer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        timer = findViewById(R.id.timer);
+        mineDisplay = findViewById(R.id.mine);
         tableLayout = findViewById(R.id.tableLayout);
         buttonBoard = new MyButton[height][width];
         createDisplay();
         gameBoard = new Board(width, height, bombs);
+        minesCounter = bombs;
+        updateMinesCounter();
         firstClick = true;
     }
 
@@ -57,38 +67,32 @@ public class MainActivity extends AppCompatActivity {
                 zoom(-10);
                 return true;
             case R.id.easy:
-                width = 9;
-                height = 9;
-                bombs = 10;
-                tableLayout.removeAllViewsInLayout();
-                buttonBoard = new MyButton[height][width];
-                createDisplay();
-                gameBoard = new Board(width,height,bombs);
-                firstClick = true;
+                selectLevel(9,9,10);
                 return true;
             case R.id.intermediate:
-                width = 16;
-                height = 16;
-                bombs = 40;
-                tableLayout.removeAllViewsInLayout();
-                buttonBoard = new MyButton[height][width];
-                createDisplay();
-                gameBoard = new Board(width,height,bombs);
-                firstClick = true;
+                selectLevel(16,16,40);
                 return true;
             case R.id.advanced:
-                width = 30;
-                height = 16;
-                bombs = 99;
-                tableLayout.removeAllViewsInLayout();
-                buttonBoard = new MyButton[height][width];
-                createDisplay();
-                gameBoard = new Board(width,height,bombs);
-                firstClick = true;
+                selectLevel(30,16,99);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void selectLevel(int width, int height, int bombs){
+        this.width = width;
+        this.height = height;
+        this.bombs = bombs;
+        tableLayout.removeAllViewsInLayout();
+        buttonBoard = new MyButton[height][width];
+        createDisplay();
+        gameBoard = new Board(width,height,bombs);
+        minesCounter = bombs;
+        updateMinesCounter();
+        firstClick = true;
+        timer.stop();
+        timer.setBase(SystemClock.elapsedRealtime());
     }
 
     public void zoom(int x){
@@ -117,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         firstClick = true;
+        minesCounter = bombs;
+        updateMinesCounter();
+        timer.stop();
+        timer.setBase(SystemClock.elapsedRealtime());
     }
 
     public void createDisplay(){
@@ -146,6 +154,8 @@ public class MainActivity extends AppCompatActivity {
                         if(firstClick){
                             gameBoard.generateBoard(b.getPosX(), b.getPosY());
                             firstClick = false;
+                            timer.setBase(SystemClock.elapsedRealtime());
+                            timer.start();
                         }
 
                         int x = gameBoard.board[b.getPosX()][b.getPosY()];
@@ -164,10 +174,13 @@ public class MainActivity extends AppCompatActivity {
                         if(b.flag && !b.opened){
                             b.setBackgroundResource(R.drawable.ic_button);
                             b.flag = false;
+                            minesCounter++;
                         }else if(!b.opened){
                             b.setBackgroundResource(R.drawable.ic_flag);
                             b.flag = true;
+                            minesCounter--;
                         }
+                        updateMinesCounter();
                         return true;
                     }
                 });
@@ -178,14 +191,35 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void updateMinesCounter(){
+        mineDisplay.setText(Integer.toString(minesCounter));
+    }
+
     public void checkGameState(int num){
         if(num == -1){
+            timer.stop();
             uncoverBomb();
-            Toast.makeText(this, "Game Over", Toast.LENGTH_LONG).show();
+            gameOver("Game Over :(");
+            //Toast.makeText(this, "Game Over", Toast.LENGTH_LONG).show();
         }else if(gameBoard.uncovered == (gameBoard.totalGrid-bombs)){
+            timer.stop();
             uncoverBomb();
-            Toast.makeText(this, "YOU WIN! :D", Toast.LENGTH_LONG).show();
+            gameOver("YOU WIN! :D");
+            //Toast.makeText(this, "YOU WIN! :D", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void gameOver(String s){
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Minesweeper");
+        alertDialog.setMessage(s);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
     }
 
     public void uncoverBomb(){
@@ -205,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void expand(int x, int y) {
         if(x >= 0 && y >= 0 && x < height && y < width ) {
-            if (buttonBoard[x][y].visited) {
+            if (buttonBoard[x][y].visited || buttonBoard[x][y].flag) {
                 return;
             }
             int result = gameBoard.board[x][y];
